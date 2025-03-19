@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Income Tracker</title>
+    <link rel="stylesheet" type="text/css" href="IncomeTracker.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Income Tracker</h1>
+        <form id="income-form">
+            <input type="text" id="income-name" placeholder="Income Name" required />
+            <input type="number" id="income-amount" placeholder="Amount" step="0.01" required/>
+            <select id="income-category" required>
+                <option value="" disabled selected>Select Category</option>
+                <option value="Paycheck">Paycheck</option>
+                <option value="Bonus">Bonus</option>
+                <option value="Investment">Investment</option>
+                <option value="Gambling">Gambling</option>
+                <option value="Sales">Sales</option>
+                <option value="Gift">Gift</option>
+            </select>
+            <input type="date" id="income-date" required />
+            <button type="submit">Add Income</button>
+        </form>
+        <div class="income-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Income Name</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="income-list"></tbody>
+            </table>
+            <div class="total-amount">
+                <strong>Total:</strong> $<span id="total-amount">0</span>
+            </div>
+        </div>
+        <div class="filter">
+            <label for="filter-category">Filter by Category:</label>
+            <select id="filter-category">
+                <option value="Paycheck">Paycheck</option>
+                <option value="Bonus">Bonus</option>
+                <option value="Investment">Investment</option>
+                <option value="Gambling">Gambling</option>
+                <option value="Sales">Sales</option>
+                <option value="Gift">Gift</option>
+            </select>
+        </div>
+    </div>
+    <script src="IncomeTracker.js"></script>
+</body>
+
+</html>
