@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Clock-in/Clock-out</title>
-    <link rel="stylesheet" href="PunchTracker.css">
+    <link rel="stylesheet" href="MaiaJoao_A7.css">
 </head>
 <body>
     <div class="background">
         <div class="page">
             <h1>Employee Time Tracking</h1>
+        
             <div class="employee-info">
                 <label for="employeeName">Employee Name: </label>
                 <input type="text" id="employeeName" placeholder="Enter your name" required>
@@ -18,6 +19,10 @@
             <div class="actions">
                 <button id="clockInBtn">Clock In</button>
                 <button id="clockOutBtn" disabled>Clock Out</button>
+            </div>
+
+            <div>
+                <button id="MissedPunch">Missed Punch</button>
             </div>
 
             <div id="recordTime">
@@ -31,6 +36,6 @@
         </div>
     </div>
 
-    <script src="PunchTracker.js"></script>
+    <script src="MaiaJoao_A7.js"></script>
 </body>
 </html>
