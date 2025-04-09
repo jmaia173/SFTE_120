@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Room Game</title>
+    <link rel="stylesheet" href="escapeRoom.css">
+</head>
+<body>
+
+    <div class="room">
+        <h2>Escape Room</h2>
+        <p>Can you escape by solving the code?</p>
+        
+        <p id="hint" class="hint">Solve the obstacle to unlock a digit!</p>
+        <div id="obstacle-container"></div>
+        
+        <input type="text" id="codeInput" placeholder="Enter code..." disabled>
+        <button class="btn" onclick="submitCode()" disabled>Submit Code</button>
+        
+        <p id="message" class="locked-message">The door is locked! Try to solve the obstacles.</p>
+
+        <div id="hintsContainer" class="hints-container"></div>
+
+        <button id="nextRoomBtn" class="btn" onclick="goToNextRoom()" style="display:none;">Next Room</button>
+    </div>
+
+    <script src="escapeRoom.js"></script>
+</body>
+</html>
