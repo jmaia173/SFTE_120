@@ -1,3 +1,21 @@
+let timer;
+let timeRemaining = 600;  
+
+// Timer functionality
+function startTimer() {
+    timer = setInterval(function() {
+        if (timeRemaining <= 0) {
+            clearInterval(timer);
+            alert("Time's up! You failed to escape.");
+        } else {
+            let minutes = Math.floor(timeRemaining / 60);
+            let seconds = timeRemaining % 60;
+            document.getElementById("timer").innerText = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            timeRemaining--;
+        }
+    }, 1000);
+}
+
 function generateCode(length) {
     let code = '';
     for (let i = 0; i < length; i++) {
@@ -6,7 +24,6 @@ function generateCode(length) {
     return code;
 }
 
-// Room Setup
 const rooms = [
     {
         type: "riddle",
@@ -29,9 +46,9 @@ const rooms = [
     },
     {
         type: "pattern",
-        code: generateCode(1),  // Only one correct pattern match needed
-        pattern: [],  // Will be generated
-    }
+        code: generateCode(1),
+        pattern: [],
+    },
 ];
 
 let currentRoomIndex = 0;
@@ -61,22 +78,33 @@ function showObstacle() {
             buttonArea.appendChild(btn);
         });
 
-        generateColorPattern();
-        displayPattern();
+        generateColorPattern();  
+        displayPattern();  
 
-    } else if (obstaclesSolved < currentRoom.obstacles.length) {
-        const { question } = currentRoom.obstacles[obstaclesSolved];
-        hint.innerText = "Solve to unlock a digit!";
-        container.innerHTML = `
-            <p>${question}</p>
+    } else if (currentRoom.type === "riddle") {
+        // Show riddle obstacles
+        hint.innerText = "Solve the obstacle to unlock a digit!";
+        container.innerHTML = 
+            `<p>${currentRoom.obstacles[obstaclesSolved].question}</p>
             <input type="text" id="obstacleAnswer" placeholder="Your answer...">
             <button class="btn" onclick="checkAnswer()">Submit Answer</button>
         `;
-    } else {
-        showHints();
+    } else if (currentRoom.type === "scramble") {
+        // Show scramble obstacles
+        hint.innerText = "Unscramble the word to unlock a digit!";
+        const currentObstacle = currentRoom.obstacles[obstaclesSolved];
+        container.innerHTML = 
+            `<p>${currentObstacle.question}</p>
+            <input type="text" id="scrambleAnswer" placeholder="Your answer...">
+            <button class="btn" onclick="checkScrambleAnswer()">Submit Answer</button>
+        `;
     }
 }
 
+// Remaining code (revealDigit, showHints, submitCode, goToNextRoom, etc.) unchanged
+// Start game
+startTimer();
+showObstacle();
 function checkAnswer() {
     const answer = document.getElementById("obstacleAnswer").value.toLowerCase();
     const currentObstacle = currentRoom.obstacles[obstaclesSolved];
@@ -85,7 +113,29 @@ function checkAnswer() {
         alert("Correct! You've unlocked a digit.");
         revealDigit();
         obstaclesSolved++;
-        showObstacle();
+        if (obstaclesSolved < currentRoom.obstacles.length) {
+            showObstacle();
+        } else {
+            showHints();
+        }
+    } else {
+        alert("Incorrect answer, try again!");
+    }
+}
+
+function checkScrambleAnswer() {
+    const answer = document.getElementById("scrambleAnswer").value.toLowerCase();
+    const currentObstacle = currentRoom.obstacles[obstaclesSolved];
+
+    if (answer === currentObstacle.answer) {
+        alert("Correct! You've unlocked a digit.");
+        revealDigit();
+        obstaclesSolved++;
+        if (obstaclesSolved < currentRoom.obstacles.length) {
+            showObstacle();
+        } else {
+            showHints();
+        }
     } else {
         alert("Incorrect answer, try again!");
     }
@@ -149,7 +199,7 @@ function goToNextRoom() {
     showObstacle();
 }
 
-// ========== Color Pattern Logic ==========
+// Color Pattern Logic
 function generateColorPattern() {
     patternToMatch = [];
     for (let i = 0; i < 4; i++) {
@@ -182,22 +232,36 @@ function handleColorClick(color) {
             showHints();
         } else {
             alert("Wrong pattern! Try again.");
-            userPattern = [];
-            displayPattern();
+            userPattern = []; // Reset pattern
         }
     }
 }
 
-// Start the game
-showObstacle();
+function checkGridSolution(value, element) {
+    if (!currentRoom.userGridSequence) currentRoom.userGridSequence = [];
 
-// Enter key handler
-document.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-        const answerInput = document.getElementById("obstacleAnswer");
-        if (answerInput && document.activeElement === answerInput) checkAnswer();
+    currentRoom.userGridSequence.push(value);
+    element.style.backgroundColor = "#f1c40f";  // Mark as selected
 
-        const codeInput = document.getElementById("codeInput");
-        if (codeInput && document.activeElement === codeInput) submitCode();
+    if (currentRoom.userGridSequence.length === currentRoom.gridSolution.length) {
+        const correct = currentRoom.gridSolution.every((val, idx) =>
+            val === currentRoom.userGridSequence[idx]
+        );
+
+        if (correct) {
+            alert("Correct order! You've unlocked the digit.");
+            revealDigit();
+            showHints();
+        } else {
+            alert("Wrong order! Try again.");
+            currentRoom.userGridSequence = [];
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.backgroundColor = ""; // Reset color
+            });
+        }
     }
-});
+}
+
+// Start the timer
+startTimer();
+showObstacle();  // Start the first room obstacle

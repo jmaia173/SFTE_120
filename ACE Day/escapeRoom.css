@@ -6,7 +6,18 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    position: relative;
 }
+
+.timer {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
 .room {
     background-color: #2c3e50;
     width: 300px;
@@ -16,16 +27,19 @@ body {
     color: white;
     padding: 20px;
 }
+
 .locked-message {
     font-size: 18px;
     margin-top: 20px;
 }
+
 input[type="text"] {
     padding: 10px;
     width: 80%;
     font-size: 18px;
     margin-top: 20px;
 }
+
 .btn {
     background-color: #e74c3c;
     color: white;
@@ -36,27 +50,33 @@ input[type="text"] {
     border-radius: 5px;
     margin-top: 10px;
 }
+
 .btn:hover {
     background-color: #c0392b;
 }
+
 .escaped {
     font-size: 22px;
     font-weight: bold;
     color: #2ecc71;
 }
+
 .hint {
     font-size: 16px;
     color: #f39c12;
     margin-top: 10px;
 }
+
 .hints-container {
     margin-top: 15px;
     font-size: 14px;
     color: #f39c12;
 }
+
 #nextRoomBtn {
     margin-top: 15px;
 }
+
 .color-btn {
     width: 60px;
     height: 60px;
@@ -66,6 +86,7 @@ input[type="text"] {
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
+
 #color-buttons {
     margin-top: 15px;
 }
