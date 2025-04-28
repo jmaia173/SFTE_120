@@ -2,25 +2,65 @@ let timer;
 let timeRemaining = 600;
 const colors = ['red', 'green', 'blue', 'yellow'];
 
+const riddlePool = [
+    { question: "What has keys but can't open locks?", answer: "piano" },
+    { question: "What comes once in a minute, twice in a moment, but never in a thousand years?", answer: "m" },
+    { question: "I am tall when I am young, and I am short when I am old. What am I?", answer: "candle" },
+    { question: "What can travel around the world while staying in the corner?", answer: "stamp" },
+    { question: "The more you take, the more you leave behind. What are they?", answer: "footsteps" },
+    { question: "What gets wetter the more it dries?", answer: "towel" },
+    { question: "What begins with T, ends with T, and has T in it?", answer: "teapot" },
+    { question: "What can you catch but not throw?", answer: "cold" },
+    { question: "What has a head, a tail, but no body?", answer: "coin" },
+    { question: "I speak without a mouth and hear without ears. What am I?", answer: "echo" },
+    { question: "What is full of holes but still holds water?", answer: "sponge" },
+    { question: "The more you take from me, the bigger I get. What am I?", answer: "hole" },
+    { question: "What has many words but never speaks?", answer: "book" },
+    { question: "goes up but never comes down?", answer: "age" },
+];
+
+const wordScramblePool = [
+    { question: "Unscramble: rgeat", answer: "great" },
+    { question: "Unscramble: tceosurpm", answer: "computers" },
+    { question: "Unscramble: anlpte", answer: "planet" },
+    { question: "Unscramble: lpepa", answer: "apple" },
+    { question: "Unscramble: naabna", answer: "banana" },
+    { question: "Unscramble: wtarlemone", answer: "watermelon" },
+    { question: "Unscramble: egnaro", answer: "orange" },
+    { question: "Unscramble: ybrerwsrta", answer: "strawberry" },
+    { question: "Unscramble: hcrnuc", answer: "crunch" },
+    { question: "Unscramble: gnihgtilf", answer: "flighting" },
+    { question: "Unscramble: eelphnat", answer: "elephant" },
+    { question: "Unscramble: ecfh", answer: "chef" }, 
+    { question: "Unscramble: trouenc", answer: "counter" },
+    { question: "Unscramble: ilpenc", answer: "pencil" }
+];
+
+function getRandomItems(array, count) {
+    const arr = [...array]; 
+
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    return arr.slice(0, count); 
+}
+
+let selectedRiddles = getRandomItems(riddlePool, 4);
+let selectedScrambles = getRandomItems(wordScramblePool, 3);
+
 const rooms = [
     {
         type: "riddle",
         code: generateCode(4),
-        obstacles: [
-            { question: "What has keys but can't open locks?", answer: "piano" },
-            { question: "What comes once in a minute, twice in a moment, but never in a thousand years?", answer: "m" },
-            { question: "I am tall when I am young, and I am short when I am old. What am I?", answer: "candle" },
-            { question: "What can travel around the world while staying in the corner?", answer: "stamp" }
-        ]
+        obstacles: selectedRiddles
     },
     {
         type: "scramble",
         code: generateCode(3),
-        obstacles: [
-            { question: "Unscramble: 'rgeat'", answer: "great" },
-            { question: "Unscramble: 'tceosurpm'", answer: "computers" },
-            { question: "Unscramble: 'anlpte'", answer: "planet" }
-        ]
+        obstacles: selectedScrambles
     },
     {
         type: "pattern",
@@ -37,7 +77,6 @@ let obstaclesSolved = 0;
 let userPattern = [];
 let patternToMatch = [];
 
-// ========== TIMER ==========
 function startTimer() {
     timer = setInterval(() => {
         if (timeRemaining <= 0) {
@@ -52,7 +91,6 @@ function startTimer() {
     }, 1000);
 }
 
-// ========== GAME FLOW ==========
 function generateCode(length) {
     let code = '';
     for (let i = 0; i < length; i++) {
@@ -64,10 +102,22 @@ function generateCode(length) {
 function goToNextRoom() {
     currentRoomIndex++;
     if (currentRoomIndex >= rooms.length) {
-        document.querySelector(".room").innerHTML = `
-            <h2>🎉 Final Escape!</h2>
-            <p>You've escaped all rooms! Congratulations!</p>`;
-        document.body.style.backgroundColor = "#27ae60";
+        document.getElementById("message").innerHTML = "<h2 class='escaped'>🎉 You've escaped all rooms! Congratulations!</h2>";
+
+        confetti({
+            particleCount: 100,
+            spread: 60,
+            origin: { y: 0.6 }
+        });
+        
+        document.getElementById("obstacle-container").style.display = "none";
+        document.getElementById("hintsContainer").style.display = "none";
+        document.getElementById("codeInput").style.display = "none";
+        document.querySelector(".btn").style.display = "none";
+        document.getElementById("nextRoomBtn").style.display = "none";
+        
+        document.body.style.backgroundColor = "#27ae60"; 
+    
         return;
     }
 
@@ -83,7 +133,7 @@ function goToNextRoom() {
     document.getElementById("codeInput").disabled = true;
     document.querySelector(".btn").disabled = true;
     document.getElementById("nextRoomBtn").style.display = "none";
-    document.body.style.backgroundColor = "#f4f4f4";
+    document.body.style.backgroundColor = "#2c3e50";
 
     showObstacle();
 }
@@ -149,7 +199,6 @@ function showObstacle() {
         generateColorPattern();
         displayPattern();
 
-        // Replay Pattern Button
         const replayBtn = document.createElement("button");
         replayBtn.innerText = "Replay Pattern";
         replayBtn.className = "btn";
@@ -187,7 +236,6 @@ function checkScrambleAnswer() {
     }
 }
 
-// ========== PATTERN LOGIC ==========
 function generateColorPattern() {
     patternToMatch = [];
     for (let i = 0; i < 4; i++) {
@@ -228,6 +276,18 @@ function handleColorClick(color) {
 function resetGame() {
     clearInterval(timer);
     timeRemaining = 600;
+    document.getElementById("timer").innerText = "10:00";
+
+    selectedRiddles = getRandomItems(riddlePool, 4);
+    selectedScrambles = getRandomItems(wordScramblePool, 3);
+
+    rooms[0].code = generateCode(4);
+    rooms[0].obstacles = selectedRiddles;
+    rooms[1].code = generateCode(3);
+    rooms[1].obstacles = selectedScrambles;
+    rooms[2].code = generateCode(1);
+    rooms[2].pattern = [];
+
     currentRoomIndex = 0;
     currentRoom = rooms[currentRoomIndex];
     secretCode = currentRoom.code;
@@ -236,20 +296,23 @@ function resetGame() {
     userPattern = [];
     patternToMatch = [];
 
-    document.getElementById("timer").innerText = "10:00";
     document.body.style.backgroundColor = "lightblue";
     document.getElementById("hintsContainer").innerHTML = "";
+    document.getElementById("obstacle-container").innerHTML = "";
     document.getElementById("codeInput").value = "";
     document.getElementById("codeInput").disabled = true;
     document.querySelector(".btn").disabled = true;
     document.getElementById("message").innerHTML = "The door is locked! Try to solve the obstacles.";
     document.getElementById("nextRoomBtn").style.display = "none";
-    document.getElementById("obstacle-container").innerHTML = "";
 
-    startTimer();
+    document.getElementById("obstacle-container").style.display = "block";
+    document.getElementById("hintsContainer").style.display = "block";
+    document.getElementById("codeInput").style.display = "inline-block";
+    document.querySelector(".btn").style.display = "inline-block";
+
     showObstacle();
+    startTimer();
 }
 
-// ========== START ==========
 startTimer();
 showObstacle();
